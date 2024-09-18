@@ -8,8 +8,7 @@
 4. Repeat Steps 2-3 until all player have no more valid moves or player has no more Dominios is the Win State.
 5. Calculate Score based on End State Lowest Score Wins, draws can happen.
 
-[[Dominos Game SGI/Gameplay Design]]
-
+Download: [Dominos Game Design Diagram](https://github.com/staticJPL/SGIDomino/blob/39a7dfc528b2d0028dd70685c97fa232b168f082/Gameplay%20Design.svg)
 ## Data Layout, Sample Code
 
 ### DominoBase
@@ -180,6 +179,7 @@ public:
 	
 		return PlayerState->GetTurn();
 	}
+
 	void AttachToBoard(size_t PlayerTileIndex,Direction CurrentDirection)
 	{
 		Gameboard* GameboardState = GetGameBoard();
@@ -276,16 +276,15 @@ public:
 	}
 
 private:
-
 	[Replicated]
-    std::vector<std::unique_ptr<DominoBase>> tiles;
-
-    [Replicated]
-    int currentScore;
-    
-    [Replicated]
+	std::vector<std::unique_ptr<DominoBase>> tiles;
+	
+	[Replicated]
+	int currentScore;
+	
+	[Replicated]
 	bool bisTurn = false;
-
+	
 	[Replicated] Server / Client 
 	GameBoard* GameBoardState;
 	
@@ -306,52 +305,53 @@ private:
 // This is a singlton class (Server Authority) means server only
 class GameMode {
 public:
-    // Constructor
-    GameMode(size_t numPlayers);
 
+	// Constructor
+	GameMode(size_t numPlayers);
+	
 	// Static method to get the singleton instance 
 	inline static GameMode& GetInstance() { static GameMode instance;}
-
+	
 	// Delete copy constructor and assignment operator so you cannot make copies or make a non copyable class to inheirt from.
 	GameMode(const GameMode&) = delete; 
 	GameMode& operator=(const GameMode&) = delete;
-
-    // Function to generate a random set of dominoes
-    // Send Seeded set to players
-    void GenerateRandomDominoSet_RPC();
-
-    // Function to check winning conditions
-    bool CheckWinningConditions() const;
-
+	
+	// Function to generate a random set of dominoes
+	// Send Seeded set to players
+	void GenerateRandomDominoSet_RPC();
+	
+	// Function to check winning conditions
+	bool CheckWinningConditions() const;
+	
 	// Update Gameboard based on PlayerStates
 	void UpdateGameBoard();
-
+	
 	// Send Updates to connected Clients
 	void NotifyPlayersBoardUpdate()
-
-    // Function to get the current player
-    PlayerState* GetCurrentPlayer() const;
-
-    // Function to switch to the next player
-    // Set bTurn on Client
-    void NextTurn_RPC();
-
-    // Function to get the number of players
-    size_t GetNumPlayers() const;
-
-    // Function to get the current game board
-    const GameBoard& GetGameBoard() const;
-
-    // Function to get the Train Pool
-    const TrainPool& GetTrainPool() const;
+	
+	// Function to get the current player
+	PlayerState* GetCurrentPlayer() const;
+	
+	// Function to switch to the next player
+	// Set bTurn on Client
+	void NextTurn_RPC();
+	
+	// Function to get the number of players
+	size_t GetNumPlayers() const;
+	
+	// Function to get the current game board
+	const GameBoard& GetGameBoard() const;
+	
+	// Function to get the Train Pool
+	const TrainPool& GetTrainPool() const;
 
 private:
-    std::vector<std::unique_ptr<PlayerState>> playerStates; // List of player states
-    GameBoard gameBoard; // Game board Server Version
-    TrainPool trainPool; // Train Pool for extra tiles
-    size_t currentPlayerIndex; // Index of the current player
-    size_t numPlayers; // Number of players
-};
+	std::vector<std::unique_ptr<PlayerState>> playerStates; // List of player states
+	GameBoard gameBoard; // Game board Server Version
+	TrainPool trainPool; // Train Pool for extra tiles
+	size_t currentPlayerIndex; // Index of the current player
+	size_t numPlayers; // Number of players
+	};
 
 ```
 
@@ -512,5 +512,4 @@ Furthermore a Red/Blue redundancy in the production environment allows for seaml
 Connection to Internal services (Source Control, Build Environment) will be externally proxied with proper security protocols (SSL,HTTPS etc..). An external porta is used to login and tunnel behind the Local Firewall. Extra Layer of User Authentication checks if users connected are valid then forwards Network traffic to the Proxy Subnet containing all the Internal services used by the company (Development,Test, Version Control). Any baremetal hardware creating the Virtual Machines should not visible, this can be done in many way virutal networks, another reverse proxy etc..
 
 ### System Design Diagram
-
-[[Dominos Game SGI/System Design]]
+Download: [Dominos Game SGI/System Design](https://github.com/staticJPL/SGIDomino/blob/39a7dfc528b2d0028dd70685c97fa232b168f082/System%20Design.svg)
